@@ -1,0 +1,12 @@
+Encryption with key 0101010101010101:
+
+
+Encryption with key fefefefefefefefe:
+
+
+Encryption with key 1f1f1f1f1f1f1f1f:
+
+
+Encryption with key e0e0e0e0e0e0e0e0:
+
+
