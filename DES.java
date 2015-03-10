@@ -16,10 +16,12 @@ Good luck!
 Status report:
 "encrypt" method still incomplete
 "main" method still incomplete
+Need to error-check the key
 */
 
 import java.util.*;
 import java.io.*;
+import java.math.*;
 
 public class DES {
 	
@@ -49,9 +51,14 @@ public class DES {
 	
 	public static String encrypt(String plaintextString, String keyString){
 		StringBuilder cipherText = new StringBuilder();
-		String[] cipherBlocks = getCipherBlocks(convertStringToBinary(plaintextString));
+		String[] cipherBlocks = getCipherBlocks(convertTextToBinary(plaintextString));
+		String keyBits = convertHexToBinary(keyString);
 		String leftHalf;
 		String rightHalf;
+		
+		if(keyBits.length() != 64){
+			return "Error with key " + keyString + ": Key should be 64 bits long.";
+		}
 		
 		for(int i = 0; i < cipherBlocks.length; i++){
 			leftHalf = cipherBlocks[i].substring(0, 32);
@@ -94,7 +101,7 @@ public class DES {
 	}
 	
 	
-	public static String convertStringToBinary( String s ){
+	public static String convertTextToBinary( String s ){
 		
 		byte[] bytes = s.getBytes();
 		StringBuilder binary = new StringBuilder();
@@ -107,6 +114,22 @@ public class DES {
 				binary.append((val & 128) == 0 ? 0 : 1);
 				val <<= 1;
 			}
+		}
+		
+		/* Tester:
+		System.out.println("'" + s + "' to binary: " + binary);
+		*/
+		
+		return binary.toString();
+	}
+	
+	
+	public static String convertHexToBinary(String s){
+		StringBuilder binary = new StringBuilder(new BigInteger(s, 16).toString(2));
+
+		//Padding 0's in front of the string:
+		while(binary.length() < (s.length() * 4)){
+			binary.insert(0, '0');
 		}
 		
 		/* Tester:
