@@ -5,18 +5,13 @@ For Carlson:
 First off, here's a really helpful guide on writing our DES program:
 http://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 
-Please create a function that does the PC-1 permutation to the key:
-
-public static String pc1(String keyString);
-
-This function will be called by the encrypt function below. 
-Good luck!
+Carlson, I finished the PC-1 permutation because it turned out to be very easy as well. 
+Same for the other permutations, except for the S-boxes. Please implement that instead.
 
 
 Status report:
 "encrypt" method still incomplete
 "main" method still incomplete
-Need to error-check the key
 */
 
 import java.util.*;
@@ -26,15 +21,15 @@ import java.math.*;
 public class DES {
 
 	static int[] initialPermutation = {
-								58,    50,   42,    34,    26,   18,    10,    2,
-								60,    52,   44,    36,    28,   20,    12,    4,
-								62,    54,   46,    38,    30,   22,    14,    6,
-								64,   56,   48,    40,    32,   24,    16,    8,
-								57,    49,   41,    33,    25,   17,     9,    1,
-								59,    51,   43,    35,    27,   19,    11,    3,
-								61,    53,   45,    37,    29,   21,    13,    5,
-								63,    55,   47,    39,    31,   23,    15,    7
-								};
+										58,    50,   42,    34,    26,   18,    10,    2,
+										60,    52,   44,    36,    28,   20,    12,    4,
+										62,    54,   46,    38,    30,   22,    14,    6,
+										64,    56,   48,    40,    32,   24,    16,    8,
+										57,    49,   41,    33,    25,   17,     9,    1,
+										59,    51,   43,    35,    27,   19,    11,    3,
+										61,    53,   45,    37,    29,   21,    13,    5,
+										63,    55,   47,    39,    31,   23,    15,    7
+										};
 	
 	public static void main (String args[]){
 		BufferedWriter bw;
@@ -195,6 +190,7 @@ public class DES {
 		
 		return ciphertextBlocks;
 	}
+	
 	
 	public static String permute(String block, int[] permutation){
 		StringBuilder permutedBlock = new StringBuilder(block.length());
