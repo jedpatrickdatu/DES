@@ -193,7 +193,7 @@ public class DES {
 	
 	
 	public static String permute(String block, int[] permutation){
-		StringBuilder permutedBlock = new StringBuilder(block.length());
+		StringBuilder permutedBlock = new StringBuilder();
 
 		for(int i = 0; i < permutation.length; i++){
 			permutedBlock.append(block.charAt(permutation[i] - 1));
