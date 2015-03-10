@@ -24,6 +24,17 @@ import java.io.*;
 import java.math.*;
 
 public class DES {
+
+	static int[] initialPermutation = {
+								58,    50,   42,    34,    26,   18,    10,    2,
+								60,    52,   44,    36,    28,   20,    12,    4,
+								62,    54,   46,    38,    30,   22,    14,    6,
+								64,   56,   48,    40,    32,   24,    16,    8,
+								57,    49,   41,    33,    25,   17,     9,    1,
+								59,    51,   43,    35,    27,   19,    11,    3,
+								61,    53,   45,    37,    29,   21,    13,    5,
+								63,    55,   47,    39,    31,   23,    15,    7
+								};
 	
 	public static void main (String args[]){
 		BufferedWriter bw;
@@ -53,6 +64,7 @@ public class DES {
 		StringBuilder cipherText = new StringBuilder();
 		String[] cipherBlocks = getCipherBlocks(convertTextToBinary(plaintextString));
 		String keyBits = convertHexToBinary(keyString);
+		String currBlock;
 		String leftHalf;
 		String rightHalf;
 		
@@ -61,8 +73,11 @@ public class DES {
 		}
 		
 		for(int i = 0; i < cipherBlocks.length; i++){
-			leftHalf = cipherBlocks[i].substring(0, 32);
-			rightHalf = cipherBlocks[i].substring(32, 64);
+			currBlock = cipherBlocks[i];
+			
+			currBlock = permute(currBlock, initialPermutation);
+			leftHalf = currBlock.substring(0, 32);
+			rightHalf = currBlock.substring(32, 64);
 			
 			for(int j = 0; j < 16; j++){
 			
@@ -179,6 +194,20 @@ public class DES {
 		*/
 		
 		return ciphertextBlocks;
+	}
+	
+	public static String permute(String block, int[] permutation){
+		StringBuilder permutedBlock = new StringBuilder(block.length());
+
+		for(int i = 0; i < permutation.length; i++){
+			permutedBlock.append(block.charAt(permutation[i] - 1));
+		}
+		
+		/*Tester:
+		System.out.println(block + " permuted to " + permutedBlock.toString());
+		*/
+		
+		return permutedBlock.toString();
 	}
 
 }
