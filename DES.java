@@ -30,6 +30,39 @@ public class DES {
 										61,    53,   45,    37,    29,   21,    13,    5,
 										63,    55,   47,    39,    31,   23,    15,    7
 										};
+										
+	static int[] fExpansion = {
+								 32,     1,    2,     3,     4,    5,
+								  4,     5,    6,     7,     8,    9,
+								  8,     9,   10,    11,    12,   13,
+								 12,    13,   14,    15,    16,   17,
+								 16,    17,   18,    19,    20,   21,
+								 20,    21,   22,    23,    24,   25,
+								 24,    25,   26,    27,    28,   29,
+								 28,    29,   30,    31,    32,    1
+								};
+								
+	static int[] pc1 = {
+						  57,   49,    41,   33,    25,    17,    9,
+						   1,   58,    50,   42,    34,    26,   18,
+						  10,    2,    59,   51,    43,    35,   27,
+						  19,   11,     3,   60,    52,    44,   36,
+						  63,   55,    47,   39,    31,    23,   15,
+						   7,   62,    54,   46,    38,    30,   22,
+						  14,    6,    61,   53,    45,    37,   29,
+						  21,   13,     5,   28,    20,    12,    4
+						};
+
+	static int[] pc2 = {
+						 14,    17,   11,    24,     1,    5,
+						  3,    28,   15,     6,    21,   10,
+						 23,    19,   12,     4,    26,    8,
+						 16,     7,   27,    20,    13,    2,
+						 41,    52,   31,    37,    47,   55,
+						 30,    40,   51,    45,    33,   48,
+						 44,    49,   39,    56,    34,   53,
+						 46,    42,   50,    36,    29,   32
+						};
 	
 	public static void main (String args[]){
 		BufferedWriter bw;
@@ -39,7 +72,7 @@ public class DES {
 						"fefefefefefefefe",
 						"1f1f1f1f1f1f1f1f",
 						"e0e0e0e0e0e0e0e0"
-						};
+						};				
 		
 		//Encrypt the plaintext using the four keys
 		//and write the ciphertext on output.txt
@@ -62,20 +95,32 @@ public class DES {
 		String currBlock;
 		String leftHalf;
 		String rightHalf;
+		String temp;
+		String keyC;
+		String keyD;
 		
 		if(keyBits.length() != 64){
 			return "Error with key " + keyString + ": Key should be 64 bits long.";
 		}
 		
 		for(int i = 0; i < cipherBlocks.length; i++){
-			currBlock = cipherBlocks[i];
+			keyBits = permute(keyBits, pc1);
+			keyC = keyBits.substring(0, 28);
+			keyD = keyBits.substring(28, 56);
 			
+			currBlock = cipherBlocks[i];
 			currBlock = permute(currBlock, initialPermutation);
 			leftHalf = currBlock.substring(0, 32);
 			rightHalf = currBlock.substring(32, 64);
 			
 			for(int j = 0; j < 16; j++){
-			
+				
+				 
+				
+				temp = rightHalf;
+				rightHalf = f(rightHalf, keyBits);
+				
+				leftHalf = temp;
 			}
 		}
 		
@@ -199,11 +244,19 @@ public class DES {
 			permutedBlock.append(block.charAt(permutation[i] - 1));
 		}
 		
+		
 		/*Tester:
 		System.out.println(block + " permuted to " + permutedBlock.toString());
 		*/
 		
 		return permutedBlock.toString();
+	}
+	
+	public static String f(String block, String key){
+		//Expansion:
+		block = permute(block, fExpansion);
+		
+		return block;
 	}
 
 }
