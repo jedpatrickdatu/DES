@@ -10,6 +10,7 @@ Same for the other permutations, except for the S-boxes. Please implement that i
 
 
 Status report:
+"f" method still needs S-boxes
 "encrypt" method still incomplete
 "main" method still incomplete
 */
@@ -64,6 +65,17 @@ public class DES {
 						 46,    42,   50,    36,    29,   32
 						};
 						
+	static int[] afterSBoxPermutation = {
+										 16,   7,  20,  21,
+										 29,  12,  28,  17,
+										  1,  15,  23,  26,
+										  5,  18,  31,  10,
+										  2,   8,  24,  14,
+										 32,  27,   3,   9,
+										 19,  13,  30,   6,
+										 22,  11,   4,  25,
+										};
+						
 	static int[] shiftKeyLeft1 = {
 									2,     3,     4,     5,     6,     7,     8,
 									9,    10,    11,    12,    13,    14,    15,   
@@ -77,6 +89,17 @@ public class DES {
 								   17,    18,    19,    20,    21,    22,    23,
 								   24,    25,    26,    27,    28,     1,     2
 								};
+								
+	static int[] finalPermutation = {
+										40,     8,   48,    16,    56,   24,    64,   32,
+										39,     7,   47,    15,    55,   23,    63,   31,
+										38,     6,   46,    14,    54,   22,    62,   30,
+										37,     5,   45,    13,    53,   21,    61,   29,
+										36,     4,   44,    12,    52,   20,    60,   28,
+										35,     3,   43,    11,    51,   19,    59,   27,
+										34,     2,   42,    10,    50,   18,    58,   26,
+										33,     1,   41,     9,    49,   17,    57,   25
+										};	
 	
 	public static void main (String args[]){
 		BufferedWriter bw;
@@ -128,11 +151,8 @@ public class DES {
 			
 			for(int j = 0; j < 16; j++){
 				
-				 
-				
 				temp = rightHalf;
-				rightHalf = f(rightHalf, keyBits);
-				
+				rightHalf = f(rightHalf, subkeys[j]);
 				leftHalf = temp;
 			}
 		}
@@ -301,6 +321,11 @@ public class DES {
 		//Expansion:
 		block = permute(block, fExpansion);
 		
+		//S-Boxes:
+		
+		
+		//Last permutation:
+		block = permute(block, afterSBoxPermutation);
 		
 		return block;
 	}
