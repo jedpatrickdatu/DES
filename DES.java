@@ -149,12 +149,14 @@ public class DES {
 			leftHalf = currBlock.substring(0, 32);
 			rightHalf = currBlock.substring(32, 64);
 			
-			for(int j = 0; j < 16; j++){
-				
+			for(int j = 0; j < 16; j++){	
 				temp = rightHalf;
-				rightHalf = f(rightHalf, subkeys[j]);
+				rightHalf = xor(leftHalf, f(rightHalf, subkeys[j])); //f still not complete
 				leftHalf = temp;
 			}
+		
+			currBlock = permute(rightHalf + leftHalf, finalPermutation);
+			cipherText.append(currBlock);
 		}
 		
 		return cipherText.toString();
@@ -328,6 +330,17 @@ public class DES {
 		block = permute(block, afterSBoxPermutation);
 		
 		return block;
+	}
+	
+	public static String xor(String a, String b){
+		StringBuilder result = new StringBuilder();
+		int len = a.length();
+		
+		for(int i = 0; i < len; i++){
+			result.append((a.charAt(i) ^ b.charAt(i)));
+		}
+		
+		return result.toString();
 	}
 
 }
