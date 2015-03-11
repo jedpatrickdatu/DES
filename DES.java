@@ -63,6 +63,20 @@ public class DES {
 						 44,    49,   39,    56,    34,   53,
 						 46,    42,   50,    36,    29,   32
 						};
+						
+	static int[] shiftKeyLeft1 = {
+									2,     3,     4,     5,     6,     7,     8,
+									9,    10,    11,    12,    13,    14,    15,   
+								   16,    17,    18,    19,    20,    21,    22,
+								   23,    24,    25,    26,    27,    28,     1
+								};
+
+	static int[] shiftKeyLeft2 = {
+									3,     4,     5,     6,     7,     8,     9,
+								   10,    11,    12,    13,    14,    15,    16,    
+								   17,    18,    19,    20,    21,    22,    23,
+								   24,    25,    26,    27,    28,     1,     2
+								};
 	
 	public static void main (String args[]){
 		BufferedWriter bw;
@@ -89,25 +103,24 @@ public class DES {
 
 	
 	public static String encrypt(String plaintextString, String keyString){
-		StringBuilder cipherText = new StringBuilder();
-		String[] cipherBlocks = getCipherBlocks(convertTextToBinary(plaintextString));
+		StringBuilder cipherText;
 		String keyBits = convertHexToBinary(keyString);
 		String currBlock;
 		String leftHalf;
 		String rightHalf;
 		String temp;
-		String keyC;
-		String keyD;
+		String[] cipherBlocks;
+		String[] subkeys;
 		
 		if(keyBits.length() != 64){
 			return "Error with key " + keyString + ": Key should be 64 bits long.";
 		}
 		
-		for(int i = 0; i < cipherBlocks.length; i++){
-			keyBits = permute(keyBits, pc1);
-			keyC = keyBits.substring(0, 28);
-			keyD = keyBits.substring(28, 56);
+		subkeys = getSubkeys(keyBits);
+		cipherBlocks = getCipherBlocks(convertTextToBinary(plaintextString));
+		cipherText = new StringBuilder();
 			
+		for(int i = 0; i < cipherBlocks.length; i++){
 			currBlock = cipherBlocks[i];
 			currBlock = permute(currBlock, initialPermutation);
 			leftHalf = currBlock.substring(0, 32);
@@ -252,9 +265,42 @@ public class DES {
 		return permutedBlock.toString();
 	}
 	
+	public static String[] getSubkeys(String keyBits){
+		String[] subkeys = new String[16];
+		String keyC;
+		String keyD;
+		
+		keyBits = permute(keyBits, pc1);
+		keyC = keyBits.substring(0, 28);
+		keyD = keyBits.substring(28, 56);
+
+		for(int i = 0; i < 16; i++){
+			if(i == 0 || i == 1 || i == 8 || i == 15){
+				keyC = permute(keyC, shiftKeyLeft1);
+				keyD = permute(keyD, shiftKeyLeft1);
+			} else{
+				keyC = permute(keyC, shiftKeyLeft2);
+				keyD = permute(keyD, shiftKeyLeft2);
+			}
+			
+			subkeys[i] = permute(keyC + keyD, pc2);
+		}
+		
+		/*Tester:
+		System.out.println("Subkeys for " + keyBits + ":");
+		for(int i = 0; i < 16; i++){
+			System.out.println(subkeys[i]);
+		}
+		System.out.println();
+		*/
+		
+		return subkeys;
+	}
+	
 	public static String f(String block, String key){
 		//Expansion:
 		block = permute(block, fExpansion);
+		
 		
 		return block;
 	}
