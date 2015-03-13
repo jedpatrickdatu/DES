@@ -155,10 +155,12 @@ public class DES {
 								}
 							};
 
+	static BufferedWriter bw;
+
 	public static void main (String args[]){
-		BufferedWriter bw;
 		String plaintext = getStringFromFile("input.txt");
 		String[] keys = {
+						"133457799BBCDFF1",
 						"0101010101010101",
 						"fefefefefefefefe",
 						"1f1f1f1f1f1f1f1f",
@@ -169,8 +171,10 @@ public class DES {
 		//and write the ciphertext on output.txt
 		try{
 			bw = new BufferedWriter( new FileWriter( "output.txt" ) );
-			for( int i = 0; i < 4; i++ ){
-				bw.write( "Encryption with key " + keys[i] + ":\n" + encrypt(plaintext, keys[i]) + "\n\n" );
+			for( int i = 0; i < 5; i++ ){
+				bw.write( "Encryption with key " + keys[i] + ":  " + encrypt(plaintext, keys[i])  );
+				bw.newLine();
+				bw.newLine();
 			}	
 			bw.close();	
 		} catch (Exception e){
@@ -194,7 +198,20 @@ public class DES {
 		}
 		
 		subkeys = getSubkeys(keyBits);
+		try{
+			bw.write("Subkeys for " + keyString + ": ");
+			bw.newLine();
+			for(int j = 0; j < 16; j++){	
+					bw.write("["+(j+1)+"] "+convertBinaryToHex(subkeys[j]));
+					bw.newLine();
+			}
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+
 		cipherBlocks = getCipherBlocks(convertTextToBinary(plaintextString));
+		
 		cipherText = new StringBuilder();
 			
 		for(int i = 0; i < cipherBlocks.length; i++){
@@ -212,8 +229,8 @@ public class DES {
 			currBlock = permute(rightHalf + leftHalf, finalPermutation);
 			cipherText.append(currBlock);
 		}
-		
-		return cipherText.toString();
+		String answer = convertBinaryToHex (cipherText.toString());
+		return answer;
 	}
 
 	
@@ -282,7 +299,17 @@ public class DES {
 		
 		return binary.toString();
 	}
-	
+
+	public static String convertBinaryToHex(String s) {
+	   StringBuilder hex = new StringBuilder(new BigInteger(s, 2).toString(16));
+
+	   while(hex.length() < (s.length() / 4)){
+			hex.insert(0, '0');
+		}
+
+	   return hex.toString().toUpperCase();
+	}
+		
 	
 	//Split the binary ciphertext into 64-bit blocks.
 	public static String[] getCipherBlocks(String plaintextBits){
