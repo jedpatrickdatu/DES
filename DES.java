@@ -160,19 +160,21 @@ public class DES {
 	public static void main (String args[]){
 		String plaintext = getStringFromFile("input.txt");
 		String[] keys = {
-						"133457799BBCDFF1",
 						"0101010101010101",
 						"fefefefefefefefe",
 						"1f1f1f1f1f1f1f1f",
 						"e0e0e0e0e0e0e0e0"
-						};				
+						};
+		//"133457799BBCDFF1", test key					
 		
 		//Encrypt the plaintext using the four keys
 		//and write the ciphertext on output.txt
 		try{
 			bw = new BufferedWriter( new FileWriter( "output.txt" ) );
-			for( int i = 0; i < 5; i++ ){
-				bw.write( "Encryption with key " + keys[i] + ":  " + encrypt(plaintext, keys[i])  );
+			bw.write("Encrypting plaintext '" + plaintext + "':\n\n");
+			for( int i = 0; i < 4; i++ ){
+				bw.write("Encryption with key " + keys[i] + ": \n");
+				bw.write("Ciphertext: " + encrypt(plaintext, keys[i]));
 				bw.newLine();
 				bw.newLine();
 			}	
@@ -198,6 +200,7 @@ public class DES {
 		}
 		
 		subkeys = getSubkeys(keyBits);
+		//Print subkeys for each of the 16 rounds.
 		try{
 			bw.write("Subkeys for " + keyString + ": ");
 			bw.newLine();
@@ -222,7 +225,7 @@ public class DES {
 			
 			for(int j = 0; j < 16; j++){	
 				temp = rightHalf;
-				rightHalf = xor(leftHalf, f(rightHalf, subkeys[j])); //f still not complete
+				rightHalf = xor(leftHalf, f(rightHalf, subkeys[j]));
 				leftHalf = temp;
 			}
 		
