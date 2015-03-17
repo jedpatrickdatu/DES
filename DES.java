@@ -158,7 +158,7 @@ public class DES {
 	static BufferedWriter bw;
 
 	public static void main (String args[]){
-		String plaintext = getStringFromFile("input.txt");
+		String plaintext = getPlaintextFromFile("input.txt");
 		String[] keys = {
 						"0101010101010101",
 						"fefefefefefefefe",
@@ -172,7 +172,7 @@ public class DES {
 		try{
 			bw = new BufferedWriter( new FileWriter( "output.txt" ) );
 			bw.write("Encrypting plaintext '" + plaintext + "':\n\n");
-			for( int i = 0; i < 4; i++ ){
+			for( int i = 0; i < keys.length; i++ ){
 				bw.write("Encryption with key " + keys[i] + ": \n");
 				bw.write("Ciphertext: " + encrypt(plaintext, keys[i]));
 				bw.newLine();
@@ -237,7 +237,7 @@ public class DES {
 	}
 
 	
-	public static String getStringFromFile(String fileName){
+	public static String getPlaintextFromFile(String fileName){
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br;
 		String line;
